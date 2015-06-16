@@ -19,12 +19,12 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
   if (extra.plots){
     pdf(file="TP Histograms.pdf")
     for (i in 1:length(myfiles)){
-      hist(myfiles[[i]]$TruePositives, main=paste(filenames[[i]]," True Positives",sep=":"), xlab="True Positives")
+      hist(myfiles[[i]]$tp, main=paste(filenames[[i]]," True Positives",sep=":"), xlab="True Positives")
     }
     dev.off()
     pdf(file="FP Histograms.pdf")
     for (i in 1:length(myfiles)){
-      hist(myfiles[[i]]$FalsePositives, main=paste(filenames[[i]]," False Positives",sep=":"), xlab="False Positives")
+      hist(myfiles[[i]]$fp, main=paste(filenames[[i]]," False Positives",sep=":"), xlab="False Positives")
     }
     dev.off()
     #Make a quick summary table comparing PPV/Precision, sensivity, and specificity
@@ -50,7 +50,7 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
     tpmax<-function(list){
       tps<-list()
       for (i in 1:length(list)){
-        tps[[i]]<-list[[i]]$TruePositives
+        tps[[i]]<-list[[i]]$tp
       }
       y<-unlist(lapply(tps, max))
       return(max(y))
@@ -60,7 +60,7 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
     tpmin<-function(list){
       tps<-list()
       for (i in 1:length(list)){
-        tps[[i]]<-list[[i]]$TruePositives
+        tps[[i]]<-list[[i]]$tp
       }
       y<-unlist(lapply(tps, min))
       return(min(y))
@@ -70,7 +70,7 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
     tpmed<-function(list){
       tps<-list()
       for (i in 1:length(list)){
-        tps[[i]]<-list[[i]]$TruePositives
+        tps[[i]]<-list[[i]]$tp
       }
       y<-unlist(lapply(tps, median))
       return(median(y))
@@ -80,7 +80,7 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
     fpmax<-function(list){
       fps<-list()
       for (i in 1:length(list)){
-        fps[[i]]<-list[[i]]$FalsePositives
+        fps[[i]]<-list[[i]]$fp
       }
       y<-unlist(lapply(fps, max))
       return(max(y))
@@ -90,7 +90,7 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
     fpmin<-function(list){
       fps<-list()
       for (i in 1:length(list)){
-        fps[[i]]<-list[[i]]$FalsePositives
+        fps[[i]]<-list[[i]]$fp
       }
       y<-unlist(lapply(fps, min))
       return(min(y))
@@ -100,7 +100,7 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
     fpmed<-function(list){
       fps<-list()
       for (i in 1:length(list)){
-        fps[[i]]<-list[[i]]$FalsePositives
+        fps[[i]]<-list[[i]]$fp
       }
       y<-unlist(lapply(fps, median))
       return(median(y))
@@ -109,7 +109,7 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
     
     all.data<-do.call("rbind", myfiles)
     
-    TPFP <- ddply(all.data, .(TruePositives, FalsePositives, file), summarize, count=length(file))
+    TPFP <- ddply(all.data, .(tp, fp, file), summarize, count=length(file))
     
     #Creates pdf output
     pdf(file="True Positives vs. False Positives.pdf")
@@ -118,7 +118,7 @@ Demonstrate2<-function(dir, make.pos.plot=TRUE, pos.plot.title="True Positives b
     #to maximums of all true and false positives. Points in the green area represent 
     #the "best" outputs, those in the red area represent the "worst", and those in
     #blue areas are "okay". 
-    p <- ggplot(TPFP, aes(x=FalsePositives, y=TruePositives), environment=environment())
+    p <- ggplot(TPFP, aes(x=fp, y=tp), environment=environment())
     
     p2 <- p + 
       geom_rect(data=all.data[1,], aes(xmin=fc, xmax=fa, ymin=tc, ymax=ta), 
